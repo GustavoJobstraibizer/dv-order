@@ -1,10 +1,18 @@
 import { createGlobalStyle } from "styled-components";
+import OpenSansFont from "./fonts/OpenSans-Regular.ttf";
 
 const GlobalStyle = createGlobalStyle`
   /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
   */
+
+  @font-face {
+    font-family: 'Open Sans';
+    src: url(${OpenSansFont}) format('ttf');
+    font-weight: 300;
+    font-style: normal;
+  }
 
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -33,6 +41,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     line-height: 1;
+    font-family: 'Open Sans', sans-serif;
   }
   ol, ul {
     list-style: none;
