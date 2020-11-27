@@ -1,6 +1,14 @@
 import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react";
-import { Button, Container, Form, Table } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Container,
+  Form,
+  FormControl,
+  Table,
+} from "react-bootstrap";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import categoriesService from "../../services/categories";
 import app from "../../utils/firebaseUtils";
@@ -11,7 +19,8 @@ export default function Categories() {
   const [categorie, setCategorie] = useState({});
   const [isEditing, setIsEditing] = useState(false);
 
-  const inputCategory = useRef();
+  // const inputCategory = useRef();
+  const { register, handleSubmit, errors, watch, control } = useForm();
 
   useEffect(() => {
     const db = app.firestore();
@@ -24,34 +33,37 @@ export default function Categories() {
     });
   }, []);
 
-  function handleSubmit() {
-    if (isEditing) {
-      editCategorie();
-    } else {
-      saveCategorie();
-    }
-  }
+  // function handleSubmit() {
+  //   if (isEditing) {
+  //     editCategorie();
+  //   } else {
+  //     saveCategorie();
+  //   }
+  // }
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   async function editCategorie() {
     try {
-      await categoriesService.edit(categorie, inputCategory.current.value);
+      // await categoriesService.edit(categorie, inputCategory.current.value);
       toast.success("Registro editado com sucesso");
     } catch (err) {
       toast.error("Erro ao editar registro");
     } finally {
-      inputCategory.current.value = "";
+      // inputCategory.current.value = "";
       setIsEditing(false);
     }
   }
 
   async function saveCategorie() {
     try {
-      await categoriesService.store(inputCategory.current.value);
+      // await categoriesService.store(inputCategory.current.value);
       toast.success("Registro salvo com sucesso");
     } catch (err) {
       toast.error("Erro ao editar registro");
     } finally {
-      inputCategory.current.value = "";
+      // inputCategory.current.value = "";
     }
   }
 
@@ -59,7 +71,7 @@ export default function Categories() {
     setCategorie(categorie);
     setIsEditing(true);
 
-    inputCategory.current.value = categorie.description;
+    // inputCategory.current.value = categorie.description;
   }
 
   async function handleRemove(categorie) {
@@ -74,26 +86,54 @@ export default function Categories() {
   return (
     <>
       <Container>
-        <Form className="text-left mt-3">
-          <Form.Group controlId="formGroupEmail">
-            <Form.Label>Descrição</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Informe a descrição da categoria"
-              name="description"
-              ref={inputCategory}
-            />
-          </Form.Group>
+        {/* <Jumbotron>
+          <h2>Dados das categorias</h2>
+        </Jumbotron> */}
 
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            size="sm"
-            variant="primary"
-          >
-            Salvar
-          </Button>
-        </Form>
+        <Card className="mt-2">
+          <Card.Header>Dados de categorias</Card.Header>
+          <Card.Body>
+            {/* <Card.Title>Special title treatment</Card.Title> */}
+            {/* <Card.Text>
+              With supporting text below as a natural lead-in to additional content.
+            </Card.Text> */}
+            {/* <Button variant="primary">Go somewhere</Button> */}
+
+            <Form
+              onSubmit={handleSubmit(onSubmit)}
+              className="text-left mt-3"
+              noValidate
+            >
+              <Form.Group controlId="formGroupEmail">
+                <Form.Label>Descrição</Form.Label>
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: true, maxLength: 50 }}
+                  defaultValue={""}
+                  as={<FormControl isInvalid={!!errors.description} />}
+                />
+                {/* <Form.Control
+                  type="text"
+                  name="description"
+                  className="col-4"
+                  ref={register({
+                    required: "Campo obrigatório",
+                    maxLength: 50,
+                  })}
+                /> */}
+
+                {errors.description && (
+                  <small className="invalid-feedback">Campo obrigatório</small>
+                )}
+              </Form.Group>
+
+              <Button type="submit" size="sm" variant="primary">
+                Salvar
+              </Button>
+            </Form>
+          </Card.Body>
+        </Card>
 
         <Table bordered hover className="mt-2">
           <thead>
