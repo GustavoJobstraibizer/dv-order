@@ -7,6 +7,7 @@ import Navigation from "./components/Navigation";
 import Categories from "./pages/Categories";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
+import ProductsForm from "./pages/ProductsForm";
 import SignIn from "./pages/SignIn";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -26,6 +27,10 @@ function App() {
           <ProtectedRoute path="/produtos">
             <Navigation />
             <Products />
+          </ProtectedRoute>
+          <ProtectedRoute path="/produto/:id">
+            <Navigation />
+            <ProductsForm />
           </ProtectedRoute>
           <Route path="/signin">
             <SignIn />
