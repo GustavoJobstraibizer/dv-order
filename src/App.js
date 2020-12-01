@@ -32,6 +32,10 @@ function App() {
             <Navigation />
             <ProductsForm />
           </ProtectedRoute>
+          <ProtectedRoute path="/produto">
+            <Navigation />
+            <ProductsForm />
+          </ProtectedRoute>
           <Route path="/signin">
             <SignIn />
           </Route>

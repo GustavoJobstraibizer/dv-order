@@ -1,19 +1,21 @@
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { Button, Card, Container, Form, FormControl } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import imageService from "../../services/image.service";
 import productService from "../../services/product.service";
 import app from "../../utils/firebaseUtils";
 
 export default function ProductsForm() {
   const { id } = useParams();
 
-  console.log(id);
-
   const [categories, setCategories] = useState([]);
   const [productId, setProductId] = useState(id);
   const [product, setProduct] = useState(null);
+  const [imageLoad, setImageLoad] = useState(false);
 
   let defaultValues = {
     categoryId: "",
@@ -55,9 +57,23 @@ export default function ProductsForm() {
       const data = ref.data();
       setProduct(data);
       setValue("name", data.name);
+      setValue("price", data.price);
+      setValue("description", data.description);
+      setValue("categoryId", data.categoryId);
+
+      let urlImage = "";
+      try {
+        setImageLoad(true);
+        urlImage = await imageService.getImage(`images/products/${data.image}`);
+      } finally {
+        setImageLoad(false);
+        imgPreview.current.src = urlImage;
+      }
     };
 
-    getProduct();
+    if (id) {
+      getProduct();
+    }
   }, [productId]);
 
   const handleSelectFile = () => {
@@ -163,7 +179,6 @@ export default function ProductsForm() {
                 {errors.price && (
                   <small className="invalid-feedback">Campo obrigatório</small>
                 )}
-                {/* <Form.Control type="number" name="price" /> */}
               </Form.Group>
 
               <Form.Group>
@@ -172,17 +187,27 @@ export default function ProductsForm() {
                     className="d-flex justify-content-center"
                     style={{ height: "120px", width: "100%" }}
                   >
-                    <Card.Img
-                      style={{
-                        maxWidth: "100px",
-                        width: "100%",
-                        borderRadius: 0,
-                      }}
-                      ref={imgPreview}
-                      variant="top"
-                    />
+                    {imageLoad ? (
+                      <div className="d-flex justify-content-center align-items-center">
+                        <FontAwesomeIcon
+                          icon={faSpinner}
+                          spin={true}
+                          size="2x"
+                        />
+                      </div>
+                    ) : (
+                      <Card.Img
+                        style={{
+                          maxWidth: "100px",
+                          width: "100%",
+                          borderRadius: 0,
+                        }}
+                        ref={imgPreview}
+                        variant="top"
+                      />
+                    )}
                   </Card.Body>
-                  <Card.Footer>
+                  <Card.Footer className="d-flex justify-content-center">
                     <label className="btn btn-success">
                       Selecionar imagem
                       <input

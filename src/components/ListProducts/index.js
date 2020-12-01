@@ -2,7 +2,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import app from "../../utils/firebaseUtils";
 
 export default function ListProducts() {
@@ -43,6 +43,9 @@ export default function ListProducts() {
 
   return (
     <>
+      <Link className="btn btn-success" to="/produto">
+        Novo
+      </Link>
       <Table bordered hover className="mt-2">
         <thead>
           <tr>
